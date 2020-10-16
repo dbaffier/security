@@ -1,0 +1,4 @@
+zcat data2.bin | bzcat | zcat | tar -xO | tar -xO | bzcat | tar -xO | zcat
+
+
+8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL

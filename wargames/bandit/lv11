@@ -1,0 +1,5 @@
+cat data.txt | python -c 'imort sys; print sys.stdin.read().encode("rot13")'
+
+rot13
+
+5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu

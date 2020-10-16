@@ -1,0 +1,3 @@
+ssh -l bandit18 bandit.labs.overthewire.org -p 2220 "/bin/bash --norc"
+
+kfBf3eYk5BPBRzwjqutbbfE887SVc5YdI

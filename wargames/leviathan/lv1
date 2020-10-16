@@ -1,0 +1,7 @@
+ltrace ./check
+
+enter something
+
+strcmp found
+
+ougahZi8Ta

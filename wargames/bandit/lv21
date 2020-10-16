@@ -1,0 +1,8 @@
+vim /etc/cron.d/cronjob_bandit22
+
+cat /usr/bin/cronjob_bandit22.sh
+
+then we can cat the file it redirect to
+
+
+Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
