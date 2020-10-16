@@ -1,0 +1,9 @@
+cat /etc/passwd
+
+------- btw we can already find hint for the next user
+
+find / -type f -user flag00 2>&-
+
+cat /usr/sbin/john
+
+http://theblob.org/rot.cgi?text=cdiiddwpgswtgt

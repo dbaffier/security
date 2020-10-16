@@ -1,0 +1,27 @@
+#include <stdio.h>
+
+void p()
+{
+	char	buff[64];
+	int		eip;
+
+	fflush(stdout);
+	gets(buff);
+	eip = __builtin_frame_address(0);
+	// EIP = (EBP + 4)
+	// EBP = top of the stack
+	// EIP = return addr
+	if ((eip & 0xb0000000) == 0xb0000000)
+	{
+		printf("(%p)\n", p);
+		exit(1);
+	}
+	puts(buff);
+	strdup(buff);
+}
+
+int main()
+{
+	p();
+	return (0);
+}

@@ -1,0 +1,23 @@
+file .pcap
+
+# .pcap fichiers sont des fichiers de données créés en utilisant le programme et ils contiennent les données en paquets d'un réseau.
+
+# sur une VM annexe get file
+# scp -P 4242 level02@<ip>:level02.pcap level02.pcap
+#
+# tshark = wireshark command line
+tshark -r level02.pcap -T fields -e data > out
+
+cat out | xxd -r -p
+
+20 66 74 5f 77 61 6e 64 72 7f 7f 7f 4e 44 52 65 6c 7f 4c 30 4c 0d
+
+that's the password in hex then ->
+
+7f = del on ascii table
+
+ft_wandrNDRelL0L
+
+become
+
+ft_waNDReL0L

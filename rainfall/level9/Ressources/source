@@ -1,0 +1,40 @@
+class N {
+	private:
+		int var1;
+		char s[108]; // ?????
+};
+
+void N:N (int c){
+	this->var1 = c;
+};
+
+void N::operator+(N &arg)
+{
+	return this->var1 + arg.var1;
+}
+
+void N::operator-(N &arg)
+{
+	return this->var1 - arg.var1;
+}
+
+void N::setAnnotation(char *s)
+{
+	size_t	size = strlen(char *s);
+
+	memcpy(this->s, s, size);
+}
+
+void main(int ac, char **av)
+{
+	N	p;
+	N	p2;
+
+	if (ac < 2)
+		exit(1);
+	p = new N(5);
+	p2 = new N(6);
+	p.setAnnotation(av[1]);
+
+	return p.operator+(&p2);
+}

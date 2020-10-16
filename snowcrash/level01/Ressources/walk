@@ -1,0 +1,11 @@
+cat /etc/passwd
+
+sur une vm annexe
+
+echo "42hDRfypTqqnw" > pass.txt
+
+john pass.txt
+
+Loaded 1 password hash (descrypt, traditional crypt(3) [DES 128/128 SSE2-16])
+
+gg

@@ -1,0 +1,35 @@
+Level 06 provide us an executable file and is soure code
+
+We have two function
+
+'y($m)' which will :
+	- replace any '.' with ' x ' in $m argument
+	- replace any '@' with ' y'  in $m argument
+
+'x($y, $z)' which will :
+	- get content of file $y
+	- apply first regex : 
+	    - search for a string like this : '[x (.*)]
+		ex : '[x HelloWorld]
+		     '[x Hello@World.com]'
+	    - replace by : 
+		ex : 'y(HelloWorld)
+		     'y(Hello yWorld x com)
+
+
+
+$a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")"
+
+This line is exploitable, the /e will execute the second agument as a php expression
+
+after some try here is the exploit :
+
+see : https://www.php.net/manual/en/language.types.string.php#language.types.string.parsing.complex
+the command is executed before it’s output is passed
+
+
+vim /tmp/pass
+
+[x {${system(getflag)}}]
+or
+[x {${system(sh)}}]

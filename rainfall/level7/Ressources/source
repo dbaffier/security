@@ -1,0 +1,30 @@
+char c[69]; // ??
+
+void m(void)
+{
+	int	t;
+
+	t = time(0);
+	printf("%s - %d\n", c, t);
+}
+
+void main(int ac, char **av)
+{
+	struct ?? *v1;
+	struct ?? *v2;
+	FILE	*f;
+
+	v1 = malloc(8); // 0x1c
+	v1->(int) = 1;
+	v1->(char *) = malloc(8);
+	
+	v2 = malloc(8);
+	v2->(int) = 2;
+	v2->(char *) = malloc(8);
+
+	ft_strcpy(v1->char*, av[1]);
+	ft_strcpy(v2->char*, av[2]);
+	f = fopen("/home/user/level8/.pass", "r");
+	fgets(c, 68, f);
+	puts("~~");
+}

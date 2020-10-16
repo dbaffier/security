@@ -1,0 +1,23 @@
+gdb ./level13
+
+disas main
+
+we can see this :
+
+ 0x08048595 <+9>:	call   0x8048380 <getuid@plt>
+ 0x0804859a <+14>:	cmp    $0x1092,%eax
+
+it call getuid then check if eax is equal to 4242 (0x1092)
+
+but we're not uid 4242
+
+gdb> b*0x0804859a
+
+gdb> r
+
+gdb> info registers
+gdb> set $eax=0x1092
+gdb> s
+
+since the cmp is now correct we jump to the right line
+

@@ -1,0 +1,100 @@
+gdb /bin/getflag
+
+disas main
+
+it does a lot of stuff,
+
+checking with ptrace, env
+
+checking every call if it fail, print error msg then exit
+
+we can bypass these condition if we want with breakpoint and setter  but let's explore more
+
+after some line there is a big chunk of code which is only  -> 
+
+CMP value, register
+JUMP somwhere
+then execute <ft_des> function
+
+it check for number like 3006, 3002, 3004 with $eax register
+
+there is 15 total check
+
+this number is interesting since there is 15 level counting from 0
+
+we can maybe conclude that's a lot of if (condition) ->  call `ft_des` which probably give us flag?
+
+but what is 3006, 3002, 3004 etc
+
+remember level01, we printed /etc/passwd to get our password
+
+flag00:x:3000:3000::/home/flag/flag00:/bin/bash
+flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
+flag02:x:3002:3002::/home/flag/flag02:/bin/bash
+flag03:x:3003:3003::/home/flag/flag03:/bin/bash
+flag04:x:3004:3004::/home/flag/flag04:/bin/bash
+flag05:x:3005:3005::/home/flag/flag05:/bin/bash
+flag06:x:3006:3006::/home/flag/flag06:/bin/bash
+flag07:x:3007:3007::/home/flag/flag07:/bin/bash
+flag08:x:3008:3008::/home/flag/flag08:/bin/bash
+flag09:x:3009:3009::/home/flag/flag09:/bin/bash
+flag10:x:3010:3010::/home/flag/flag10:/bin/bash
+flag11:x:3011:3011::/home/flag/flag11:/bin/bash
+flag12:x:3012:3012::/home/flag/flag12:/bin/bash
+flag13:x:3013:3013::/home/flag/flag13:/bin/bash
+flag14:x:3014:3014::/home/flag/flag14:/bin/bash
+
+username:password:uid:gid
+these number make sence now
+
+we need to search for 3014 since we're last lvl
+
+
+python
+3014 = 0xbc6
+int("0xbc6", 16)
+
+gdb /bin/getflag
+b main
+we can see that there is this :
+
+0x08048bb6 <+624>:	cmp    $0xbc6,%eax
+
+it then jump to 1183
+0x08048bbb <+629>:	je     0x8048de5 <main+1183>
+
+0x08048de5 <+1183>:	mov    0x804b060,%eax
+jump *0x08048de5
+
+Continuing at 0x8048de5.
+7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ        <-------------- / ! \
+*** stack smashing detected ***: /bin/getflag terminated
+======= Backtrace: =========
+/lib/i386-linux-gnu/libc.so.6(__fortify_fail+0x45)[0xb7f2fd95]
+/lib/i386-linux-gnu/libc.so.6(+0x103d4a)[0xb7f2fd4a]
+/bin/getflag[0x8048ec7]
+/lib/i386-linux-gnu/libc.so.6(__libc_start_main+0xf3)[0xb7e454d3]
+/bin/getflag[0x8048571]
+======= Memory map: ========
+08048000-0804a000 r-xp 00000000 07:00 12700      /bin/getflag
+0804a000-0804b000 r--p 00001000 07:00 12700      /bin/getflag
+0804b000-0804c000 rw-p 00002000 07:00 12700      /bin/getflag
+0804c000-0806d000 rw-p 00000000 00:00 0          [heap]
+b7e07000-b7e23000 r-xp 00000000 07:00 14117      /lib/i386-linux-gnu/libgcc_s.so.1
+b7e23000-b7e24000 r--p 0001b000 07:00 14117      /lib/i386-linux-gnu/libgcc_s.so.1
+b7e24000-b7e25000 rw-p 0001c000 07:00 14117      /lib/i386-linux-gnu/libgcc_s.so.1
+b7e2b000-b7e2c000 rw-p 00000000 00:00 0
+b7e2c000-b7fcf000 r-xp 00000000 07:00 14123      /lib/i386-linux-gnu/libc-2.15.so
+b7fcf000-b7fd1000 r--p 001a3000 07:00 14123      /lib/i386-linux-gnu/libc-2.15.so
+b7fd1000-b7fd2000 rw-p 001a5000 07:00 14123      /lib/i386-linux-gnu/libc-2.15.so
+b7fd2000-b7fd5000 rw-p 00000000 00:00 0
+b7fd9000-b7fdd000 rw-p 00000000 00:00 0
+b7fdd000-b7fde000 r-xp 00000000 00:00 0          [vdso]
+b7fde000-b7ffe000 r-xp 00000000 07:00 14081      /lib/i386-linux-gnu/ld-2.15.so
+b7ffe000-b7fff000 r--p 0001f000 07:00 14081      /lib/i386-linux-gnu/ld-2.15.so
+b7fff000-b8000000 rw-p 00020000 07:00 14081      /lib/i386-linux-gnu/ld-2.15.so
+bffdf000-c0000000 rw-p 00000000 00:00 0          [stack]
+
+Program received signal SIGABRT, Aborted.
+0xb7fdd428 in __kernel_vsyscall ()
+
