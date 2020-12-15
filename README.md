@@ -20,7 +20,7 @@ Security projects
 
 
 ## Snowcrash
-- Basic CTF
+- Basic CTF introduction
 
 ## RainFall
 - No source file
