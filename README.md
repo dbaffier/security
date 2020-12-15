@@ -2,9 +2,10 @@ Security projects
 =========================
 
 ## Informations
-- Majority of source file are approximative and created from analysis of their binary
+- Majority of source file are approximative and created from analysis of their binary. 
 - Majority of folder contain a write-up, don't look at them if you don't want to be spoiled.
 - Some write-up may be in French.
+- Langages used: C, Assembly (Mach-O/Linux) 32/64 bits, Python, Bash...
 
 
 ## Projects
@@ -13,6 +14,9 @@ Security projects
 [RainFall](#RainFall)  
 [Override](#Override)  
 [Wargames](#Wargames)   
+[Woody_woodpacker](#Woody_woodpacker)   
+[DrQuine](#DrQuine)   
+
 
 
 ## Snowcrash
@@ -33,5 +37,14 @@ Security projects
 - Advanced Buffer/Heap overflow
 
 ## Wargames
-- CTFS like from `https://overthewire.org/wargames/`
+- Challenge from `https://overthewire.org/wargames/`
   - Bandit, Krypton, Leviathan, Narnia
+
+
+## Woody_woodpacker
+- Packer for ELF and Mach-O binary (64 bits)
+- Binary infection for ELF and Mach-O binary (64 bits)
+- Obfuscation (beginner)
+
+## DrQuine
+- Multiple programs that display its own source code
