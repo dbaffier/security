@@ -21,6 +21,7 @@ Security projects
 
 ## Snowcrash
 - Basic CTF introduction
+- Exploit in script languages
 
 ## RainFall
 - No source file
