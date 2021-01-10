@@ -7,24 +7,87 @@
 
 int    Mach_O_integrity(char *path)
 {
-    void                    *file;
-    struct stat             stat;
-    struct mach_header_64   mh64;
-    struct load_command     *lc;
+    void                        *file;
+    struct stat                 s;
+    struct mach_header_64       *mh64;
+    struct load_command         *lc;
+    struct segment_command_64   *sg64;
+    struct section_64           *s64;
+    uint64_t                    big_load_end;
+    uint64_t                    big_size;
+    uint32_t                    sizeofhdr;
+    int                         fd;
 
 
-    stat = stat(path, &stat);
-    if (stat == -1)
-        return (0);
-    file = mmap(NULL, stat.st_size PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (stat(path, &s) == -1)
+        return (ft_fatal("stat error"));
+    if ((fd = open(path, O_RDONLY)) < 0)
+        return (ft_fatal("open error"));
+    file = mmap(NULL, s.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+    close(fd);
     if (file == MAP_FAILED)
-        return (0);
+        return (ft_fatal("mmap failed"));
+    uint32_t magic;
+
+    magic = *((unsigned int *)file);
+
     if (!is_Macho(*(unsigned int *)file))
-        return (0);
+        return (ft_fatal("Not an Mach-o file"));
+    if (!Macho_64(magic))
+        return (ft_fatal("Not an x64 Mach-o file"));
     mh64 = (struct mach_header_64 *)file;
-    lc = (struct load_command *)(fiile + sizeof(struct mach_header_64));
-    if (mh64->sizeofcmds + sizeof(struct mach_header_64) > stat.st_size)
-        return (0);
+    if (mh64 == NULL)
+        return (ft_fatal("Not an x64 Mach-O header"));
+    if (mh64->sizeofcmds + sizeof(struct mach_header_64) > (unsigned long)s.st_size)
+        return (ft_fatal("sizeofcmds extend past the size of the file"));
+    sizeofhdr = mh64->sizeofcmds + sizeof(struct mach_header_64);
+    lc = (struct load_command *)(file + sizeof(struct mach_header_64));
+    big_load_end = 0;
+    for (uint32_t i = 0; i < mh64->ncmds; i++)
+    {
+        if (big_load_end + sizeof(struct load_command) > mh64->sizeofcmds)
+            return (ft_fatal("error load_command"));
+        if (lc->cmdsize % 8 != 0)
+            return (ft_fatal("cmdsize is not an multiple of 8"));
+
+        big_load_end += lc->cmdsize;
+        if (big_load_end > (unsigned long)s.st_size)
+            return (ft_fatal("cmd size extend past the size of the file"));
+        if (lc->cmdsize == 0)
+            return (ft_fatal("cmdsize is 0"));
+        if (lc->cmd == LC_SEGMENT_64)
+        {
+            if (lc->cmdsize < sizeof(struct segment_command_64))
+                return (ft_fatal("cmdsize is lower than segment_command struct"));
+            sg64 = (struct segment_command_64 *)lc;
+            big_size = sg64->nsects;
+            big_size *= sizeof(struct section_64);
+            big_size += sizeof(struct segment_command_64);
+            if (sg64->cmdsize != big_size)
+                return (ft_fatal("cmdsize doesn't match is real size"));
+            if (sg64->fileoff > (unsigned long)s.st_size)
+                return (ft_fatal("fileoff extend past the size of the file"));
+            big_size = sg64->fileoff;
+            big_size += sg64->filesize;
+            if (big_size > (unsigned long)s.st_size)
+                return (ft_fatal("fileoff + filesize extend past the size of the file "));
+            s64 = (struct section_64 *)((char *)sg64 + sizeof(struct segment_command_64));
+            for (uint32_t j = 0; j < sg64->nsects; j++)
+            {
+                if (sg64->fileoff == 0 && s64->offset < sizeofhdr && s64->size != 0)
+                    return (ft_fatal("section error"));
+                big_size = s64->offset;
+                big_size += s64->size;
+                if (big_size > (unsigned long)s.st_size)
+                    return (ft_fatal("section offset + size extend past the size of the file"));
+                if (s64->reloff > s.st_size)
+                    return (ft_fatal("section reloff extend past the size of the file"));
+            }
+        }
+        lc = (struct load_command *)((char *)lc + lc->cmdsize);
+    }
+    munmap(file, s.st_size);
+    return (1);
 }
 
 int		is_Macho(uint32_t magic)
@@ -98,7 +161,7 @@ uint64_t entry_offset(char *file)
             return (((struct entry_point_command *)lc)->entryoff);
         lc = (struct load_command *)((char *)lc + lc->cmdsize);
     }
-    ft_fatal("entryoff not found");
+    ft_fatal("entryoff not found or not an executable");
     return (0);
 }
 

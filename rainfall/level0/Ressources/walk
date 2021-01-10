@@ -1,7 +1,5 @@
-gdb ./level0
+There is a cmp which give us permissions if we enter 423
 
 cmp 0x1a7, %eax
-
-which is 423
 
 /home/user/level1/.pass

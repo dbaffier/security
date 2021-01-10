@@ -1,7 +1,7 @@
 class N {
-	private:
+	public:
 		int var1;
-		char s[108]; // ?????
+		char s[100]; // ?????
 };
 
 void N:N (int c){
@@ -36,5 +36,6 @@ void main(int ac, char **av)
 	p2 = new N(6);
 	p.setAnnotation(av[1]);
 
-	return p.operator+(&p2);
+	p + p2;
+	return (0);
 }

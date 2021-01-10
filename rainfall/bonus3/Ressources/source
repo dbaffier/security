@@ -1,0 +1,23 @@
+int main(int ac, char **av)
+{
+	char	buff[66]; // not SURE YET
+	FILE	*fd;
+	int		i = -1;
+
+	fd = fopen("/home/user/end/.pass", "r");
+	while (++i < 33)
+		buff[i] = 0;
+	if (!fd || ac != 2)
+		return (0xffffffff)  // -1
+	fread(buff, 1, 66, fd);
+	buff[67] = 0; 				// esp + 0x9c == FILE; esp + 0x18 = BUFFER
+	buff + 56 = 0; 				// [esp + 0x59] = 0
+
+	buff += atoi(argv[1]) 		// ??
+	fread(buff + 66, 1, 65, fd);
+	fclose(fd);
+	if (strcmp(buff, argv[1]) == 0)
+		execl("/bin/sh", "sh", 0);
+	puts(buff + 66);
+	return (0);
+}

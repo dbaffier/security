@@ -110,6 +110,20 @@ size_t		ft_strcmp(char *src, char *cmp)
 	return (1);
 }
 
+int			ft_memcmp(const void *s1, const void *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n && s1 && s2)
+	{
+		if (*(char *)s1 != *(char *)s2)
+			return (*(char *)s1 - *(char *)s2);
+		i++;
+	}
+	return (0);
+}
+
 size_t		ft_strlen(const char *str)
 {
 	int		i;

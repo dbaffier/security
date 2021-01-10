@@ -4,13 +4,6 @@ there is no limit of copy since we use strcpy
 
 if we overwrite the malloc of 64 we can overwrite the next of 4 -->
 
-
-MALLOC(64)
-
-METADATA(8) - 64 bytes
-
-malloc(4)
-
 METADATA(8) - 64 bytes - METADATA(8) - 4 bytes
 
 we can then overwrite the ptr func with the func we want

@@ -1,17 +1,3 @@
-ltrace to check if there is an error
-
-we found one on cat
-
-ls -la show aswell that the file leviathan2 is owned by leviathan3 user
-
-so we saw that cat can read multiple files who are separated by space
-
-we can then create one random file and a symlink to leviathan2
-
-call the binary with one file who contain both name of these file separated by
-space
-
-get passswd
-
+Race conditions
 
 Ahdiemoo1j

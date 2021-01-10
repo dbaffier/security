@@ -1,13 +1,14 @@
-int m; \\ 0x08 04 98 8c
+int m;
 
 void v(void)
 {
 	char buff[512];
+
 	fgets(buff, 512, stdin)
 	printf(buff);
-	if (m == 0x40)
+	if (m == 64)
 	{
-		fwrite("Wait what?!\n", 16, 1);
+		fwrite("Wait what?!\n", 1, 16, 1);
 		system("/bin/sh");
 	}
 }

