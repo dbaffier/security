@@ -18,6 +18,7 @@ Security projects
 [DrQuine](#DrQuine)   
 [Boot2Root](#Boot2Root)  
 [Darkly](#Darkly)  
+[Strace](#Strace)  
 
 
 
@@ -58,3 +59,6 @@ Security projects
 
 ## Darkly
 - Introduction to web security
+
+## Strace
+- Implementation of the unix command `Strace`
