@@ -16,6 +16,8 @@ Security projects
 [Wargames](#Wargames)   
 [Woody_woodpacker](#Woody_woodpacker)   
 [DrQuine](#DrQuine)   
+[Boot2Root](#Boot2Root)  
+[Darkly](#Darkly)  
 
 
 
@@ -49,3 +51,10 @@ Security projects
 
 ## DrQuine
 - Multiple programs that display its own source code
+
+## Boot2Root
+- Pentest
+- Privileges escalations
+
+## Darkly
+- Introduction to web security
