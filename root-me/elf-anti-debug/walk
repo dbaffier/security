@@ -1,0 +1,17 @@
+There is some signal(SIGTRAP, FUNC) at the start multiple times
+
+
+and there is some handmade \xCC writed which trigger the debugger
+
+
+we can bypass these with signal SIGTRAP
+
+we can also use catch syscall read, catch syscall write
+it give us some code where the addr of buffer read is
+if we look next block  we can see some sort of decryptiion below
+
+which do `xor byte, 0xfc` it check for our buffer 0x8048251 and some string 0x80482d1
+which correspond to  [A5 CF 9D B4 DD 88 B4 95 AF 95 AF 88 B4 CF 97 B9 85 DD 00]
+
+in python >>> ''.join(map(lambda i: chr(i ^ 0xfc), [0xA5, 0xCF, 0x9D, 0xB4, 0xDD, 0x88, 0xB4, 0x95, 0xAF, 0x95, 0xAF, 0x88, 0xB4, 0xCF, 0x97, 0xB9, 0x85, 0xDD]))
+'Y3aH!tHiSiStH3kEy!'

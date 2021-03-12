@@ -1,0 +1,88 @@
+/* r2dec pseudo code output */
+/* ./ch38 @ 0x401000 */
+#include <stdint.h>
+ 
+ // ARG3 = 0x00401f7d (ADDR)
+ // ESI = 8 (KEY LEN ?)
+ // rdx = BUFFER ???
+int64_t fcn_00401000 (signed int64_t arg3, int64_t arg2, int64_t arg1) {
+    signed int64_t var_28h;
+    int64_t var_1ch;
+    int64_t var_18h;
+    int64_t var_5h;
+    signed int64_t var_4h;
+    int64_t var_2h;
+    int64_t var_1h;
+    rdx = arg3;
+    rsi = arg2;
+    rdi = arg1;
+    /* [01] -r-x section size 4140 named .text */
+    var_18h = rdi;
+    var_1ch = esi;
+    var_28h = rdx;
+    var_4h = 0;
+    while (var_4h <= 0xff) {
+        rdx = (int64_t) var_4h;
+        rax = var_28h;
+        rax += rdx;
+        edx = (int32_t) var_4h;
+        *(rax) = dl;
+        eax = (int32_t) var_4h;
+        eax++;
+        var_4h = ax;
+    }
+	// BUFFER = 0 1 2 3 4 ... 256
+    var_1h = 0;
+    var_2h = 0;
+    var_4h = 0;
+    while (var_4h <= 0xff) {
+        edx = (int32_t) var_1h;
+        rax = var_18h;
+        rax += rdx;
+        eax = *(rax);
+        edx = (int32_t) al;
+        rcx = (int64_t) var_4h;
+        rax = var_28h;
+        rax += rcx;
+        eax = *(rax);
+        eax = (int32_t) al;
+        edx += eax;
+        eax = (int32_t) var_2h;
+        eax += edx;
+        edx:eax = (int64_t) eax;
+        edx >>= 0x18;
+        eax += edx;
+        eax = (int32_t) al;
+        eax -= edx;
+        var_2h = al;
+        rdx = (int64_t) var_4h;
+        rax = var_28h;
+        rax += rdx;
+        eax = *(rax);
+        var_5h = al;
+        edx = (int32_t) var_2h;
+        rax = var_28h;
+        rax += rdx;
+        rcx = (int64_t) var_4h;
+        rdx = var_28h;
+        rdx += rcx;
+        eax = *(rax);
+        *(rdx) = al;
+        edx = (int32_t) var_2h;
+        rax = var_28h;
+        rdx += rax;
+        eax = (int32_t) var_5h;
+        *(rdx) = al;
+        eax = (int32_t) var_1h;
+        eax++;
+        edx:eax = (int64_t) eax;
+        ax = dx:ax / var_1ch;
+        dx = dx:ax % var_1ch;
+        eax = edx;
+        var_1h = al;
+        eax = (int32_t) var_4h;
+        eax++;
+        var_4h = ax;
+    }
+    return rax;
+}

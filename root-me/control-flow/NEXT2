@@ -1,0 +1,83 @@
+/* r2dec pseudo code output */
+/* ./ch38 @ 0x4011e4 */
+#include <stdint.h>
+ 
+uint64_t fcn_004011e4 (int64_t arg3, signed int64_t arg2, int64_t arg1) {
+    int64_t var_28h;
+    signed int64_t var_1ch;
+    int64_t var_18h;
+    int64_t var_7h;
+    int64_t var_6h;
+    int64_t var_3h;
+    int64_t var_2h;
+    int64_t var_1h;
+    rdx = arg3;
+    rsi = arg2;
+    rdi = arg1;
+    var_18h = rdi;
+    var_1ch = esi;
+    var_28h = rdx;
+    var_1h = 0;
+    var_3h = 0;
+    eax = (int32_t) var_3h;
+    var_2h = al;
+    var_6h = 0;
+    while (var_1ch > eax) {
+        eax = (int32_t) var_2h;
+        eax++;
+        edx:eax = (int64_t) eax;
+        edx >>= 0x18;
+        eax += edx;
+        eax = (int32_t) al;
+        eax -= edx;
+        var_2h = al;
+        edx = (int32_t) var_2h;
+        rax = var_28h;
+        rax += rdx;
+        eax = *(rax);
+        var_3h += al;
+        edx = (int32_t) var_2h;
+        rax = var_28h;
+        rax += rdx;
+        eax = *(rax);
+        var_7h = al;
+        edx = (int32_t) var_3h;
+        rax = var_28h;
+        rax += rdx;
+        ecx = (int32_t) var_2h;
+        rdx = var_28h;
+        rdx += rcx;
+        eax = *(rax);
+        *(rdx) = al;
+        edx = (int32_t) var_3h;
+        rax = var_28h;
+        rdx += rax;
+        eax = (int32_t) var_7h;
+        *(rdx) = al;
+        rdx = (int64_t) var_6h;
+        rax = var_18h;
+        rax += rdx;
+        edx = *(rax);
+        ecx = (int32_t) var_2h;
+        rax = var_28h;
+        rax += rcx;
+        ecx = *(rax);
+        esi = (int32_t) var_3h;
+        rax = var_28h;
+        rax += rsi;
+        eax = *(rax);
+        eax += ecx;
+        ecx = (int32_t) al;
+        rax = var_28h;
+        rax += rcx;
+        eax = *(rax);
+        eax ^= edx;
+        var_1h ^= al;
+        eax = (int32_t) var_6h;
+        eax++;
+        var_6h = ax;
+        eax = (int32_t) var_6h;
+    }
+    eax = (int32_t) var_1h;
+    return rax;
+}
