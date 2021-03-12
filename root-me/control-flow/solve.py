@@ -1,20 +1,3 @@
-#!/usr/bin/env python2
-
-"""
-In this challenge we are given a binary that checks an input given from stdin.
-If it is correct, it will call get_flag in a separate library and print it.
-However, we don't have the library so need to find the correct input and input
-it over netcat. If it is incorrect, only 'Goodbye' is printed.
-
-Reversing shows that the program verifies the input character by character.]
-Because of the program's linear nature and reliance on verbose constraints, 
-angr is perfect for solving this challenge quickly. On a virtual machine
-with one core and 4 GB of RAM, it took ~26 seconds to solve.
-
-Author: scienceman (@docileninja)
-Team: PPP (CMU)
-"""
-
 import angr
 
 START = 0x400B30  # start of main
