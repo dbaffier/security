@@ -1,8 +1,4 @@
-%if 0 
- * Title: Rootme ELF - No software breakpoints Cracking Challenge
- * Author: Osanda Malith (@OsandaMalith)
- * Website: http://osandamalith.wordpress.com
-%endif 
+
 
 extern printf
 extern exit
@@ -18,13 +14,7 @@ section .data
 	fmt_checksum	db	"[+] Checksum: %x",0xa,0xa,0
 	fmt_serial	db	"[+] Serial is: %s",0xa,0xa,0
 
-	banner:
-	db 0x9,"------------------------------------------------------------",0xa
-	db 0x9,"[~] Rootme No software breakpoints Cracking Challenge",0xa
-	db 0x9,"[~] Author: Osanda Malith (@OsandaMalith)",0xa
-	db 0x9,"[~] Website: http://osandamalith.wordpress.com",0xa
-	db 0x9,"------------------------------------------------------------",0xa,0xa,0
-	
+
 	shellcode: 
     
 	db       0xb8,0x04,0x00,0x00,0x00,0xbb,0x01,0x00,0x00,0x00       
